@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<style type="text/css">
+		
+.loader {
+  margin:0px auto;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+	</style>
+ 
+	<title>Google OCR</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.0.min.js"></script>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <span class="navbar-brand mb-0 h1">Google 光學辨識文字</span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="./index.html">首頁 <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="./CutEdge/index.html">自動切白邊</a>
+      <a class="nav-item nav-link" href="./demos/tutorial2.php">手動切圖</a>
+    </div>
+  </div>
+</nav>
+
+<br/>
+<br/>
+
+<div class='description' style="text-align:center;">
+  <h2> Google OCR 自動辨識文字</h2><br/>
+  <p>此光學辨識基於google API實作而成<br/>
+  上傳的圖片文字要是正體、整齊的文字<br/>
+    且圖片盡量是正的，不要有歪斜的狀況<br/>
+    否則可能有些字會辨識錯誤<br/>
+   產出結果在下方<br/>
+ 支援格式：jpg、jpeg、png、gif、bmp、pdf</p>
+</div>
+<br/>
+<div class='upload' style="text-align:center;">
+  <form id='uploadform' action="upload_img.php" method="post" enctype="multipart/form-data">
+  	<input type="file" name="img[]" id='img' multiple style="display: none;" onchange="getFileNumber();" >
+  	<button type="button" class="btn btn-primary btn-lg" onclick="img.click()" id='filebutton'>上傳檔案</button>
+    <button type="submit" class="btn btn-secondary btn-lg">開始辨識</button>
+  </form>
+  <p id="fileshow">已上傳 0 個檔案</p>
+</div>
+<br/>
+  <div class='loader' id='loader' style="display: none">
+
+
+  </div>
+  <div id='result' style="text-align: center">
+  	
+  </div>
+  <script type="text/javascript">
+    function getFileNumber(){
+      var fileNumber=document.getElementById("img").files.length;
+      document.getElementById("fileshow").innerHTML='已上傳 '+fileNumber.toString()+' 個檔案';
+    }
+  </script>
+  <script type="text/javascript">
+  	$(document).ready(function (e){
+    $("#loader").hide();
+    $(document).ajaxStart(function(){
+        $("#loader").show();
+        $("#result").hide();
+    });
+    
+    var d ;
+    $("#uploadform").on('submit',(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "upload.php",
+            type: "POST",
+            data:  new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data){
+                d = data;
+                $("#result").show();
+                $("#result").html(d);
+                $("#loader").hide();
+            },
+            
+            error: function(){}             
+        });
+    }));
+    $(document).ajaxStop(function(){
+
+        
+    });
+    
+});
+
+  </script>
+</body>
+</html>
